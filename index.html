@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ventilation Referral Decision Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4faff;
+      padding: 40px;
+      color: #1e293b;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      padding: 32px;
+      max-width: 500px;
+      margin: auto;
+    }
+    .card h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 24px;
+      padding: 16px;
+      border-left: 4px solid #0ea5e9;
+      background: #e0f2fe;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2><i data-lucide="stethoscope"></i> Ventilation Referral Tool</h2>
+
+    <label for="department">Primary Team:</label>
+    <select id="department" onchange="toggleAhuOption(); updateReferral()">
+      <option value="">-- Select Primary Team --</option>
+      <option value="RCCM">RCCM</option>
+      <option value="CVM">Cardiology</option>
+      <option value="NL">Neurology</option>
+      <option value="NS">Neurosurgery</option>
+      <option value="GM">General Medicine</option>
+      <option value="GS">General Surgery</option>
+      <option value="URO">Urology</option>
+      <option value="RENAL">Renal Medicine</option>
+      <option value="OTH_MED">Other Medicine Disciplines</option>
+      <option value="OTH_SURG">Other Surgery Disciplines</option>
+      <option value="NCID">NCID</option>
+      <option value="HVRSS">HVRSS</option>
+    </select>
+
+    <div id="ahu-section" style="display:none">
+      <label for="inAhu">Is patient in AHU?</label>
+      <select id="inAhu" onchange="updateReferral()">
+        <option value="">-- Select Location --</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+
+    <label for="time">Time:</label>
+    <select id="time" onchange="updateReferral()">
+      <option value="">-- Select Time --</option>
+      <option value="office">Office Hour</option>
+      <option value="nonoffice">Non Office Hour</option>
+    </select>
+
+    <div class="result" id="result">
+      Please select a Primary Team and Time to see the referral.
+    </div>
+  </div>
+
+  <script>
+    const referrals = {
+      RCCM: {
+        office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+        nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+      },
+      CVM: {
+        office: "Refer to Cardiology Registrar / Consultant",
+        nonoffice: "Refer to Cardiology Registrar / Consultant"
+      },
+      NL: {
+        office: "Refer to NICU Neurology Registrar / Consultant",
+        nonoffice: "Refer to NICU Neurology Registrar-on-call"
+      },
+      NS: {
+        office: "Refer to NICU/HDU Anesthesia Consultant",
+        nonoffice: "Refer to NICU Anesthesia Registrar (R2)"
+      },
+      GM: {
+        office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+        nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+      },
+      GS: {
+        office: "Refer to SICU Anesthesia Consultant",
+        nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
+      },
+      URO: {
+        office: "Refer to SICU Anesthesia Consultant",
+        nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
+      },
+      RENAL: {
+        yes: {
+          office: "Refer to Renal Medicine Registrar / Consultant (only in AHU)",
+          nonoffice: "Refer to Renal Medicine Registrar / Consultant (only in AHU)"
+        },
+        no: {
+          office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+          nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+        }
+      },
+      OTH_MED: {
+        office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+        nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+      },
+      OTH_SURG: {
+        office: "Refer to SICU Anesthesia Consultant",
+        nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
+      },
+      NCID: {
+        office: "Refer to OICU Registrar / Consultant",
+        nonoffice: "Refer to OICU Registrar / Consultant"
+      },
+      HVRSS: {
+        office: "Refer to HVRSS Team (Call 9643 7713)",
+        nonoffice: "Refer to Registrar-on-call (based on patient’s admitting discipline)"
+      }
+    };
+
+    function toggleAhuOption() {
+      const dept = document.getElementById("department").value;
+      const ahuSection = document.getElementById("ahu-section");
+      if (dept === "RENAL") {
+        ahuSection.style.display = "block";
+      } else {
+        ahuSection.style.display = "none";
+      }
+    }
+
+    function updateReferral() {
+      const dept = document.getElementById("department").value;
+      const time = document.getElementById("time").value;
+      const inAhu = document.getElementById("inAhu")?.value;
+      const result = document.getElementById("result");
+
+      if (dept === "RENAL" && inAhu && referrals[dept][inAhu] && referrals[dept][inAhu][time]) {
+        result.innerText = referrals[dept][inAhu][time];
+      } else if (dept && time && dept !== "RENAL" && referrals[dept] && referrals[dept][time]) {
+        result.innerText = referrals[dept][time];
+      } else {
+        result.innerText = "Please select a Primary Team and Time to see the referral.";
+      }
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
