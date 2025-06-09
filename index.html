@@ -184,9 +184,9 @@
       const result = document.getElementById("result");
 
       if (dept === "RENAL" && inAhu && referrals[dept][inAhu] && referrals[dept][inAhu][time]) {
-        result.innerText = referrals[dept][inAhu][time];
+        result.innerHTML = referrals[dept][inAhu][time] + '<br><small>(Please inform RT only after the authorised doctor has prescribed the NIV / Vent order. Thank you.)</small>';
       } else if (dept && time && dept !== "RENAL" && referrals[dept] && referrals[dept][time]) {
-        result.innerText = referrals[dept][time];
+        result.innerHTML = referrals[dept][time] + '<br><small>(Please inform RT only after the authorised doctor has prescribed the NIV / Vent order. Thank you.)</small>';
       } else {
         result.innerText = "Please select a Primary Team and Time to see the referral.";
       }
