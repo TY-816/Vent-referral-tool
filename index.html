@@ -18,7 +18,7 @@
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
       padding: 32px;
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
     }
     .card h2 {
@@ -36,8 +36,21 @@
     }
     .radio-group {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .radio-group label {
+      background-color: #f1f5f9;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .radio-group input[type="radio"] {
+      margin-right: 6px;
+    }
+    .radio-group label:hover {
+      background-color: #e2e8f0;
     }
     .result {
       margin-top: 24px;
@@ -55,35 +68,33 @@
 
     <label>Primary Team:</label>
     <div class="radio-group" id="department-group">
-      <label><input type="radio" name="department" value="RCCM" onchange="toggleAhuOption(); updateReferral()"> RCCM</label>
-      <label><input type="radio" name="department" value="CVM" onchange="toggleAhuOption(); updateReferral()"> Cardiology</label>
-      <label><input type="radio" name="department" value="NL" onchange="toggleAhuOption(); updateReferral()"> Neurology</label>
-      <label><input type="radio" name="department" value="NS" onchange="toggleAhuOption(); updateReferral()"> Neurosurgery</label>
-      <label><input type="radio" name="department" value="GM" onchange="toggleAhuOption(); updateReferral()"> General Medicine</label>
-      <label><input type="radio" name="department" value="GS" onchange="toggleAhuOption(); updateReferral()"> General Surgery</label>
-      <label><input type="radio" name="department" value="URO" onchange="toggleAhuOption(); updateReferral()"> Urology</label>
-      <label><input type="radio" name="department" value="RENAL" onchange="toggleAhuOption(); updateReferral()"> Renal Medicine</label>
-      <label><input type="radio" name="department" value="OTH_MED" onchange="toggleAhuOption(); updateReferral()"> Other Medicine Disciplines</label>
-      <label><input type="radio" name="department" value="OTH_SURG" onchange="toggleAhuOption(); updateReferral()"> Other Surgery Disciplines</label>
-      <label><input type="radio" name="department" value="NCID" onchange="toggleAhuOption(); updateReferral()"> NCID GW</label>
-      <label><input type="radio" name="department" value="HVRSS" onchange="toggleAhuOption(); updateReferral()"> HVRSS</label>
+      <label><input type="radio" name="department" value="RCCM" onchange="toggleAhuOption(); updateReferral()">RCCM</label>
+      <label><input type="radio" name="department" value="CVM" onchange="toggleAhuOption(); updateReferral()">Cardiology</label>
+      <label><input type="radio" name="department" value="NL" onchange="toggleAhuOption(); updateReferral()">Neurology</label>
+      <label><input type="radio" name="department" value="NS" onchange="toggleAhuOption(); updateReferral()">Neurosurgery</label>
+      <label><input type="radio" name="department" value="GM" onchange="toggleAhuOption(); updateReferral()">General Medicine</label>
+      <label><input type="radio" name="department" value="GS" onchange="toggleAhuOption(); updateReferral()">General Surgery</label>
+      <label><input type="radio" name="department" value="URO" onchange="toggleAhuOption(); updateReferral()">Urology</label>
+      <label><input type="radio" name="department" value="RENAL" onchange="toggleAhuOption(); updateReferral()">Renal Medicine</label>
+      <label><input type="radio" name="department" value="OTH_MED" onchange="toggleAhuOption(); updateReferral()">Other Medicine Disciplines</label>
+      <label><input type="radio" name="department" value="OTH_SURG" onchange="toggleAhuOption(); updateReferral()">Other Surgery Disciplines</label>
+      <label><input type="radio" name="department" value="NCID" onchange="toggleAhuOption(); updateReferral()">NCID GW</label>
+      <label><input type="radio" name="department" value="HVRSS" onchange="toggleAhuOption(); updateReferral()">HVRSS</label>
     </div>
 
     <div id="ahu-section" style="display:none">
-      <label for="inAhu">Is patient in AHU?</label>
-      <select id="inAhu" onchange="updateReferral()">
-        <option value="">-- Select Location --</option>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-      </select>
+      <label>Is patient in AHU?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="inAhu" value="yes" onchange="updateReferral()">Yes</label>
+        <label><input type="radio" name="inAhu" value="no" onchange="updateReferral()">No</label>
+      </div>
     </div>
 
-    <label for="time">Time:</label>
-    <select id="time" onchange="updateReferral()">
-      <option value="">-- Select Time --</option>
-      <option value="office">Office Hour</option>
-      <option value="nonoffice">Non Office Hour</option>
-    </select>
+    <label>Time:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="time" value="office" onchange="updateReferral()">Office Hour</label>
+      <label><input type="radio" name="time" value="nonoffice" onchange="updateReferral()">Non Office Hour</label>
+    </div>
 
     <div class="result" id="result">
       Please select a Primary Team and Time to see the referral.
@@ -160,8 +171,8 @@
 
     function updateReferral() {
       const dept = document.querySelector('input[name="department"]:checked')?.value;
-      const time = document.getElementById("time").value;
-      const inAhu = document.getElementById("inAhu")?.value;
+      const time = document.querySelector('input[name="time"]:checked')?.value;
+      const inAhu = document.querySelector('input[name="inAhu"]:checked')?.value;
       const result = document.getElementById("result");
 
       if (dept === "RENAL" && inAhu && referrals[dept][inAhu] && referrals[dept][inAhu][time]) {
