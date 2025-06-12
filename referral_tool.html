@@ -1,13 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ventilation Referral Decision Tool</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    body {
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Ventilation Referral Decision Tool
+  </title>
+<link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@latest">
+</script>
+<style>
+   body {
       font-family: 'Inter', sans-serif;
       background-color: #f4faff;
       padding: 40px;
@@ -60,139 +64,548 @@
       border: 1px solid #cbd5e1;
     }
     .result {
-      margin-top: 24px;
-      padding: 16px;
-      border-left: 4px solid #0ea5e9;
-      background: #e0f2fe;
-      border-radius: 8px;
-      font-weight: 500;
-    }
+  position: sticky;
+  bottom: 0;
+  background: #e0f2fe;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #cbd5e1;
+  border-radius: 16px 16px 0 0;
+  padding: 24px;
+  z-index: 100;
+  line-height: 1.8;
+  font-weight: 500;
+  max-height: 60vh;
+  overflow-y: auto;
+}
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2><i data-lucide="stethoscope"></i> Ventilation Referral Tool</h2>
-
-    <label for="department">Primary Team:</label>
-    <select id="department" onchange="toggleAhuOption(); updateReferral()">
-      <option value="">-- Select Team --</option>
-      <option value="RCCM">RCCM</option>
-      <option value="CVM">Cardiology</option>
-      <option value="NL">Neurology</option>
-      <option value="NS">Neurosurgery</option>
-      <option value="GM">General Medicine</option>
-      <option value="GS">General Surgery</option>
-      <option value="URO">Urology</option>
-      <option value="RENAL">Renal Medicine</option>
-      <option value="OTH_MED">Other Medicine Disciplines</option>
-      <option value="OTH_SURG">Other Surgery Disciplines</option>
-      <option value="NCID">NCID GW</option>
-      <option value="HVRSS">HVRSS</option>
-    </select>
-
-    <div id="ahu-section" style="display:none">
-      <label>Is patient in AHU?</label>
-      <div class="radio-group">
-        <label><input type="radio" name="inAhu" value="yes" onchange="updateReferral()">Yes</label>
-        <label><input type="radio" name="inAhu" value="no" onchange="updateReferral()">No</label>
-      </div>
-    </div>
-
-    <label>Time:</label>
-    <div class="radio-group">
-      <label><input type="radio" name="time" value="office" onchange="updateReferral()">Office Hour</label>
-      <label><input type="radio" name="time" value="nonoffice" onchange="updateReferral()">Non Office Hour</label>
-    </div>
-
-    <div class="result" id="result">
-      Please select a Primary Team and Time to see the referral.
-    </div>
-  </div>
-
-  <script>
-    const referrals = {
-      RCCM: {
+<div class="card">
+<h2>
+<i data-lucide="stethoscope">
+</i>
+    No More Suffering Guide   </h2>
+<label for="department">
+    Primary Team:
+   </label>
+<select id="department" onchange="toggleAhuOption(); updateReferral()">
+<option value="">
+     -- Select Team --
+    </option>
+<option value="RCCM">
+     RCCM
+    </option>
+<option value="CVM">
+     Cardiology
+    </option>
+<option value="NL">
+     Neurology
+    </option>
+<option value="NS">
+     Neurosurgery
+    </option>
+<option value="GM">
+     General Medicine
+    </option>
+<option value="GS">
+     General Surgery
+    </option>
+<option value="URO">
+     Urology
+    </option>
+<option value="RENAL">
+     Renal Medicine
+    </option>
+<option value="OTH_MED">
+     Other Medicine Disciplines
+    </option>
+<option value="OTH_SURG">
+     Other Surgery Disciplines
+    </option>
+<option value="NCID">
+     NCID GW
+    </option>
+<option value="HVRSS">
+     HVRSS
+    </option>
+</select>
+<div id="ahu-section" style="display:none">
+<label>
+     Is patient in AHU?
+    </label>
+<div class="radio-group">
+<label>
+<input name="inAhu" onchange="updateReferral()" type="radio" value="yes"/>
+      Yes
+     </label>
+<label>
+<input name="inAhu" onchange="updateReferral()" type="radio" value="no"/>
+      No
+     </label>
+</div>
+</div>
+<label>
+    Time:
+   </label>
+<div class="radio-group">
+<label>
+<input name="time" onchange="updateReferral()" type="radio" value="office"/>
+     Office Hour
+    </label>
+<label>
+<input name="time" onchange="updateReferral()" type="radio" value="nonoffice"/>
+     Non Office Hour
+    </label>
+</div>
+<label>
+  Acuity:
+</label>
+<div class="radio-group">
+  <label>
+    <input type="radio" name="acuity" value="green" onchange="toggleDonDoff(); toggleWardOptions(); updateReferral()" />
+    Green
+  </label>
+  <label>
+    <input type="radio" name="acuity" value="amber" onchange="toggleDonDoff(); toggleWardOptions(); updateReferral()" />
+    Amber
+  </label>
+  <label>
+    <input type="radio" name="acuity" value="red" onchange="toggleDonDoff(); toggleWardOptions(); updateReferral()" />
+    Red
+  </label>
+</div>
+<div id="don-doff-section" style="display:none">
+<label>
+     Can patient don/doff NIV mask independently?
+    </label>
+<div class="radio-group">
+<label>
+<input name="donDoff" onchange="updateReferral()" type="radio" value="yes"/>
+      Yes
+     </label>
+<label>
+<input name="donDoff" onchange="updateReferral()" type="radio" value="no"/>
+      No
+     </label>
+</div>
+</div>
+<div id="ward-section" style="display:none">
+<label id="ward-label">
+     Is patient in an approved ward?
+    </label>
+<div class="radio-group">
+<label>
+<input name="inApprovedWard" onchange="updateReferral()" type="radio" value="yes"/>
+      Yes
+     </label>
+<label>
+<input name="inApprovedWard" onchange="updateReferral()" type="radio" value="no"/>
+      No
+     </label>
+</div>
+</div>
+<label>
+    Is patient using their own ventilator?
+   </label>
+<div class="radio-group">
+<label>
+<input name="ownVent" onchange="toggleOwnVent(); updateReferral()" type="radio" value="yes"/>
+     Yes
+    </label>
+<label>
+<input name="ownVent" onchange="toggleOwnVent(); updateReferral()" type="radio" value="no"/>
+     No
+    </label>
+</div>
+<div id="own-vent-section" style="display:none">
+<label for="ventBrand">
+     Select Brand:
+    </label>
+<select id="ventBrand" onchange="populateModels(); updateReferral()">
+<option value="">
+      -- Select Brand --
+     </option>
+<option value="Resmed">
+      Resmed
+     </option>
+<option value="Philips">
+      Philips (Respironics)
+     </option>
+<option value="Breas">
+      Breas
+     </option>
+<option value="Lowenstein">
+      Lowenstein
+     </option>
+<option value="Transcend">
+      Transcend
+     </option>
+</select>
+<label for="ventModel">
+     Select Model:
+    </label>
+<select id="ventModel" onchange="updateReferral()">
+<option value="">
+      -- Select Model --
+     </option>
+</select>
+</div>
+<label>
+    Ventilation Type:
+   </label>
+<div class="radio-group">
+<label>
+<input name="ventType" onchange="toggleMask(); updateReferral()" type="radio" value="noninvasive"/>
+     Non-Invasive
+    </label>
+<label>
+<input name="ventType" onchange="toggleMask(); updateReferral()" type="radio" value="invasive"/>
+     Invasive
+    </label>
+</div>
+<div id="mask-section" style="display:none">
+<label>
+     Full face mask?
+    </label>
+<div class="radio-group">
+<label>
+<input name="fullFace" onchange="updateReferral()" type="radio" value="yes"/>
+      Yes
+     </label>
+<label>
+<input name="fullFace" onchange="updateReferral()" type="radio" value="no"/>
+      No
+     </label>
+</div>
+</div>
+</div>
+<script>
+   const referrals = {
+    RCCM: {
+      office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+      nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+    },
+    CVM: {
+      office: "Refer to Cardiology Registrar / Consultant",
+      nonoffice: "Refer to Cardiology Registrar / Consultant"
+    },
+    NL: {
+      office: "Refer to NICU Neurology Registrar / Consultant",
+      nonoffice: "Refer to NICU Neurology Registrar-on-call"
+    },
+    NS: {
+      office: "Refer to NICU/HDU Anesthesia Consultant",
+      nonoffice: "Refer to NICU Anesthesia Registrar (R2)"
+    },
+    GM: {
+      office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+      nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+    },
+    GS: {
+      office: "Refer to SICU Anesthesia Consultant",
+      nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
+    },
+    URO: {
+      office: "Refer to SICU Anesthesia Consultant",
+      nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
+    },
+    RENAL: {
+      yes: {
+        office: "Refer to Renal Medicine Registrar / Consultant (only in AHU)",
+        nonoffice: "Refer to Renal Medicine Registrar / Consultant (only in AHU)"
+      },
+      no: {
         office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
         nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
-      },
-      CVM: {
-        office: "Refer to Cardiology Registrar / Consultant",
-        nonoffice: "Refer to Cardiology Registrar / Consultant"
-      },
-      NL: {
-        office: "Refer to NICU Neurology Registrar / Consultant",
-        nonoffice: "Refer to NICU Neurology Registrar-on-call"
-      },
-      NS: {
-        office: "Refer to NICU/HDU Anesthesia Consultant",
-        nonoffice: "Refer to NICU Anesthesia Registrar (R2)"
-      },
-      GM: {
-        office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
-        nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
-      },
-      GS: {
-        office: "Refer to SICU Anesthesia Consultant",
-        nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
-      },
-      URO: {
-        office: "Refer to SICU Anesthesia Consultant",
-        nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
-      },
-      RENAL: {
-        yes: {
-          office: "Refer to Renal Medicine Registrar / Consultant (only in AHU)",
-          nonoffice: "Refer to Renal Medicine Registrar / Consultant (only in AHU)"
-        },
-        no: {
-          office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
-          nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
-        }
-      },
-      OTH_MED: {
-        office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
-        nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
-      },
-      OTH_SURG: {
-        office: "Refer to SICU Anesthesia Consultant",
-        nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
-      },
-      NCID: {
-        office: "Refer to OICU Registrar / Consultant",
-        nonoffice: "Refer to OICU Registrar / Consultant"
-      },
-      HVRSS: {
-        office: "Refer to HVRSS Team (Call 9643 7713)",
-        nonoffice: "Refer to Registrar-on-call (based on patient’s admitting discipline)"
       }
+    },
+    OTH_MED: {
+      office: "Refer to RCCM blue letter Registrar (SMS 9722 1713)",
+      nonoffice: "Refer to Medical HD/NIVU Registrar-on-call"
+    },
+    OTH_SURG: {
+      office: "Refer to SICU Anesthesia Consultant",
+      nonoffice: "Refer to SICU Anesthesia Registrar (R2)"
+    },
+    NCID: {
+      office: "Refer to OICU Registrar / Consultant",
+      nonoffice: "Refer to OICU Registrar / Consultant"
+    },
+    HVRSS: {
+      office: "Refer to HVRSS Team (Call 9643 7713)",
+      nonoffice: "Refer to Registrar-on-call (based on patient’s admitting discipline)"
+    }
+  };
+
+  function toggleAhuOption() {
+    const dept = document.getElementById("department").value;
+    document.getElementById("ahu-section").style.display = dept === "RENAL" ? "block" : "none";
+  }
+
+function toggleDonDoff() {
+  const acuity = document.querySelector('input[name="acuity"]:checked')?.value;
+  document.getElementById("don-doff-section").style.display = acuity === "green" ? "block" : "none";
+}
+
+function toggleWardOptions() {
+  const acuity = document.querySelector('input[name="acuity"]:checked')?.value;
+  const wardSection = document.getElementById("ward-section");
+  const wardLabel = document.getElementById("ward-label");
+
+  if (acuity === "amber") {
+    wardLabel.innerText = "Is patient in an approved ward? [AHU, ACA (Wards 7–12C), Ward 7C, 8A–8D, 10A–10D, 13D (private class patient with competent 24/7 caregiver), HDU]";
+    wardSection.style.display = "block";
+  } else if (acuity === "red") {
+    wardLabel.innerText = "Is patient in an approved ward? [ICU/HDU of respective disciplines, NIVU, AHU, ACA (not applicable for Division of Surgery)]";
+    wardSection.style.display = "block";
+  } else {
+    wardSection.style.display = "none";
+  }
+}
+
+
+  function toggleOwnVent() {
+    const val = document.querySelector('input[name="ownVent"]:checked')?.value;
+    document.getElementById("own-vent-section").style.display = val === "yes" ? "block" : "none";
+  }
+
+  function populateModels() {
+    const brand = document.getElementById("ventBrand").value;
+    const modelSelect = document.getElementById("ventModel");
+    modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+
+    const models = {
+      Resmed: ["Lumis series", "Stellar series", "Astral series", "Airsense series", "Aircurves series", "AirStart 10"],
+      Philips: ["TRILOGY Series", "A30/A40", "BIPAP ST series / AVAPS", "Dreamstation BiPAP series", "Dreamstation Auto CPAP/ CPAP Pro", "Dreamstation Go"],
+      Breas: ["VIVO 1/2/30", "VIVO 3/40/45/50/60", "iSLEEP 22/25", "iSLEEP 20+/20i"],
+      Lowenstein: ["Prisma SMART"],
+      Transcend: ["365 MiniCPAP Auto"]
     };
 
-    function toggleAhuOption() {
-      const dept = document.getElementById("department").value;
-      const ahuSection = document.getElementById("ahu-section");
-      if (dept === "RENAL") {
-        ahuSection.style.display = "block";
-      } else {
-        ahuSection.style.display = "none";
-      }
+    if (models[brand]) {
+      models[brand].forEach(model => {
+        const opt = document.createElement("option");
+        opt.value = model;
+        opt.text = model;
+        modelSelect.appendChild(opt);
+      });
     }
+  }
 
-    function updateReferral() {
-      const dept = document.getElementById("department").value;
-      const time = document.querySelector('input[name="time"]:checked')?.value;
-      const inAhu = document.querySelector('input[name="inAhu"]:checked')?.value;
-      const result = document.getElementById("result");
+  function updateReferral() {
+  const dept = document.getElementById("department").value;
+  const time = document.querySelector('input[name="time"]:checked')?.value;
+  const inAhu = document.querySelector('input[name="inAhu"]:checked')?.value;
+  const acuity = document.querySelector('input[name="acuity"]:checked')?.value;
+  const donDoff = document.querySelector('input[name="donDoff"]:checked')?.value;
+  const inWard = document.querySelector('input[name="inApprovedWard"]:checked')?.value;
+  const ownVent = document.querySelector('input[name="ownVent"]:checked')?.value;
+  const brand = document.getElementById("ventBrand")?.value;
+  const model = document.getElementById("ventModel")?.value;
+  const ventType = document.querySelector('input[name="ventType"]:checked')?.value;
+  const fullFace = document.querySelector('input[name="fullFace"]:checked')?.value;
+  const result = document.getElementById("result");
+  const remarksText = document.getElementById("remarks")?.value || "";
 
-      if (dept === "RENAL" && inAhu && referrals[dept][inAhu] && referrals[dept][inAhu][time]) {
-        result.innerHTML = referrals[dept][inAhu][time] + '<br><small>(Please inform RT only after the authorised doctor has prescribed the NIV / Vent order. Thank you.)</small>';
-      } else if (dept && time && dept !== "RENAL" && referrals[dept] && referrals[dept][time]) {
-        result.innerHTML = referrals[dept][time] + '<br><small>(Please inform RT only after the authorised doctor has prescribed the NIV / Vent order. Thank you.)</small>';
-      } else {
-        result.innerText = "Please select a Primary Team and Time to see the referral.";
-      }
+  let baseReferral = "";
+  if (dept === "RENAL" && inAhu && referrals[dept][inAhu] && referrals[dept][inAhu][time]) {
+    baseReferral = referrals[dept][inAhu][time];
+  } else if (dept && time && dept !== "RENAL" && referrals[dept] && referrals[dept][time]) {
+    baseReferral = referrals[dept][time];
+  }
+
+  let acuityMsg = "";
+  if (acuity === "green") {
+    if (!donDoff) {
+      acuityMsg = "Please indicate if the patient can don/doff the NIV mask.";
+    } else if (donDoff === "no") {
+      acuityMsg = "⚠️ Patient cannot don/doff NIV mask independently. Escalate to Amber group.";
+    } else {
+      acuityMsg = "Green group: No restrictions on ward location.";
     }
+  } else if (acuity === "amber") {
+    if (!inWard) {
+      acuityMsg = "Please indicate if the patient is in an approved ward.";
+    } else if (inWard === "no") {
+      acuityMsg = "⚠️ Patient must be transferred to: AHU, ACA (Wards 7–12C), Ward 7C, 8A–8D, 10A–10D, 13D (private class patient with competent 24/7 caregiver), or HDU.";
+    } else {
+      acuityMsg = "Amber group: Patient is in an approved ward.";
+    }
+  } else if (acuity === "red") {
+    if (!inWard) {
+      acuityMsg = "Please indicate if the patient is in an approved ward.";
+    } else if (inWard === "no") {
+      acuityMsg = "⚠️ Patient must be transferred to: ICU/HDU (discipline), NIVU, AHU, or ACA (not applicable for Division of Surgery).";
+    } else {
+      acuityMsg = "Red group: Patient is in an approved ward.";
+    }
+  }
 
-    lucide.createIcons();
+  let ownVentMsg = "";
+  let deviceMsg = "";
+  let mepilexMsg = "";
+  let extraChecklist = [];
+
+  if (ownVent === "yes" && brand && model) {
+    ownVentMsg = `Patient is using own ventilator (${brand} - ${model}). Please use RCD adapter and plug into E-source.`;
+
+    if (pmRequiredNoBatteryModels.includes(model)) {
+      deviceMsg = "This model requires Indemnity form, valid PM/EST, and BME check.";
+      if (acuity !== "green") {
+        deviceMsg += "<br>⚠️ This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.";
+      }
+    } else if (noBatteryModels.includes(model)) {
+      deviceMsg = "This model requires Indemnity form. No PM/EST/BME check needed.";
+      if (acuity !== "green") {
+        deviceMsg += "<br>⚠️ This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.";
+      }
+    } else {
+      deviceMsg = "This model requires Indemnity form and PM/EST/BME machine check.";
+    }
+  }
+
+  if (ownVent === "no") {
+    extraChecklist.push("Connect the power cord to E-source. No need for RCD adaptor.");
+  }
+
+  if (ventType === "noninvasive" || ventType === "invasive") {
+    extraChecklist.push("Check for exhalation valve.");
+  }
+
+  if (ventType === "noninvasive" && fullFace === "yes") {
+    mepilexMsg = "Full face mask selected. Please use Mepilex (unless patient refuses).";
+  }
+
+  function addCheckbox(item) {
+    const isWarning = item.includes("⚠️");
+    const style = isWarning ? "color:red;font-weight:bold;" : "";
+    return `<li style="margin-bottom: 8px;"><label><input type="checkbox" style="margin-right: 8px;" /><span style="${style}">${item}</span></label></li>`;
+  }
+
+  let checklist = "<div style='margin-left: 16px;'><form><ul style='padding-left: 0; list-style: none;'>";
+
+  if (baseReferral) checklist += addCheckbox(baseReferral);
+  if (acuityMsg) checklist += addCheckbox(acuityMsg);
+  if (ownVentMsg) checklist += addCheckbox(ownVentMsg);
+  if (deviceMsg) {
+    const parts = deviceMsg.split("<br>");
+    parts.forEach(p => checklist += addCheckbox(p));
+  }
+  if (mepilexMsg) checklist += addCheckbox(mepilexMsg);
+  extraChecklist.forEach(item => checklist += addCheckbox(item));
+
+  checklist += "</ul></form></div>";
+
+  if ([baseReferral, acuityMsg, ownVentMsg, deviceMsg, mepilexMsg].some(Boolean) || extraChecklist.length > 0) {
+    result.innerHTML = `
+      <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;'>
+        <strong>To Do List:</strong>
+        <div>
+          <button onclick="toggleResult()" style="margin-right: 8px; padding: 4px 12px; border: none; border-radius: 6px; background: #cbd5e1;">🔽</button>
+          <button onclick="copyResult()" style="padding: 4px 12px; border: none; border-radius: 6px; background: #0ea5e9; color: white;">📋 Copy</button>
+        </div>
+      </div>
+      <div id='result-content'>
+        ${checklist}
+        <div style='margin-top:12px; font-size: 13px; color: #475569; user-select: text;'>
+          Only Senior Residents/Registrars and Consultants that showing here are authorised to prescribe ventilator settings.
+        </div>
+        <div style='margin-top:16px;'>
+          <label for='remarks' style='font-weight:600;'>Remarks:</label>
+          <textarea id='remarks' rows='3' style='width:100%; border-radius:8px; padding:8px; border:1px solid #cbd5e1;'>${remarksText}</textarea>
+        </div>
+      </div>`;
+  } else {
+    result.innerHTML = "Please complete the required selections to see referral.";
+  }
+}
+
+
+
+      const pmRequiredNoBatteryModels = [
+      "A30/A40",
+      "BIPAP ST series / AVAPS",
+      "Dreamstation BiPAP series",
+      "Lumis series",
+      "Aircurves series",
+      "VIVO 1/2/30",
+      "iSLEEP 22/ 25",
+      "iSLEEP 20+/ 20i"
+    ];
+
+    const noBatteryModels = [
+      "Airsense series",
+      "AirStart 10",
+      "Dreamstation Auto CPAP/ CPAP Pro",
+      "Dreamstation Go",
+      "iSLEEP 20+/20i",
+      "Prisma SMART",
+      "365 MiniCPAP Auto"
+    ];
+
+
+  function toggleMask() {
+    const type = document.querySelector('input[name="ventType"]:checked')?.value;
+    document.getElementById("mask-section").style.display = type === "noninvasive" ? "block" : "none";
+  }
+
+lucide.createIcons();
+  function copyResult() {
+  const checklistItems = document.querySelectorAll('#result-content ul li');
+  let text = 'To Do List:\\n\\n';
+
+  checklistItems.forEach(item => {
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    const labelText = item.innerText.trim();
+    const isChecked = checkbox.checked;
+    const boxSymbol = isChecked ? '☑' : '☐';
+    text += `${boxSymbol} ${labelText}\\n`;
+  });
+
+  // 指示文字
+  const instruction = document.querySelector('#result-content > div[style*="user-select"]');
+  if (instruction) {
+    text += `\\n${instruction.innerText.trim()}\\n`;
+  }
+
+  // 備註
+  const remarks = document.getElementById('remarks')?.value;
+  if (remarks) {
+    text += `\\nRemarks: ${remarks.trim()}\\n`;
+  }
+
+  // 複製到剪貼簿
+  const temp = document.createElement("textarea");
+  temp.value = text;
+  document.body.appendChild(temp);
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+  alert("✅ Result (including checked items and remarks) copied to clipboard!");
+}
+
+  function toggleResult() {
+    const section = document.getElementById("result-content");
+    const toggleBtn = event.currentTarget;
+    if (section.style.display === "none") {
+      section.style.display = "block";
+      toggleBtn.innerText = "🔽";
+    } else {
+      section.style.display = "none";
+      toggleBtn.innerText = "🔼";
+    }
+  }
   </script>
+<div class="result" id="result">
+   Please select a Primary Team and Time to see the referral.
+   <br/>
+   <div style="margin-top: 16px; font-size: 13px; color: #475569;">
+     Only Senior Residents/Registrars and Consultants that showing here are authorised to prescribe ventilator settings.
+   </div>
+   <div style="margin-top: 16px;">
+     <label for="remarks" style="font-weight: 600;">Remarks:</label>
+     <textarea id="remarks" rows="3" style="width: 100%; border-radius: 8px; padding: 8px; border: 1px solid #cbd5e1;"></textarea>
+   </div>
+</div>
 </body>
 </html>
