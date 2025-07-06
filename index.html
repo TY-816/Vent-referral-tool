@@ -277,6 +277,19 @@
       No
      </label>
 </div>
+<label>
+  Is strap magnetic?
+</label>
+<div class="radio-group">
+  <label>
+    <input name="magneticStrap" onchange="updateReferral()" type="radio" value="yes" />
+    Yes
+  </label>
+  <label>
+    <input name="magneticStrap" onchange="updateReferral()" type="radio" value="no" />
+    No
+  </label>
+</div>
 </div>
 </div>
 <script>
@@ -404,6 +417,7 @@ function toggleWardOptions() {
   const model = document.getElementById("ventModel")?.value;
   const ventType = document.querySelector('input[name="ventType"]:checked')?.value;
   const fullFace = document.querySelector('input[name="fullFace"]:checked')?.value;
+const magneticStrap = document.querySelector('input[name="magneticStrap"]:checked')?.value;
   const result = document.getElementById("result");
   const remarksText = document.getElementById("remarks")?.value || "";
 
@@ -452,12 +466,12 @@ function toggleWardOptions() {
     if (pmRequiredNoBatteryModels.includes(model)) {
       deviceMsg = "This model requires Indemnity form, valid PM/EST, and BME check.";
       if (acuity !== "green") {
-        deviceMsg += "<br>⚠️ This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.";
+        deviceMsg += "<br>⚠️ This model lacks internal battery. Please switch to battery-supported ventilator, or use a portable battery (currently applicable only to Dreamstation BiPAP series and ResMed AirStart 10), or transfer patient to ACA/HDU/ICU to prevent risk during power failure.";
       }
     } else if (noBatteryModels.includes(model)) {
       deviceMsg = "This model requires Indemnity form. No PM/EST/BME check needed.";
       if (acuity !== "green") {
-        deviceMsg += "<br>⚠️ This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.";
+        deviceMsg += "<br>⚠️ This model lacks internal battery. Please switch to battery-supported ventilator, or use a portable battery (currently applicable only to Dreamstation BiPAP series and ResMed AirStart 10), or transfer patient to ACA/HDU/ICU to prevent risk during power failure.";
       }
     } else {
       deviceMsg = "This model requires Indemnity form and PM/EST/BME machine check.";
@@ -470,6 +484,10 @@ function toggleWardOptions() {
 
   if (ventType === "noninvasive" || ventType === "invasive") {
     extraChecklist.push("Check for exhalation valve.");
+  }
+
+  if (ventType === "noninvasive" || ventType === "invasive") {
+  extraChecklist.push("Ensure ventilator settings and alarm limits are set properly.");
   }
 
   if (ventType === "noninvasive" && fullFace === "yes") {
@@ -492,6 +510,9 @@ function toggleWardOptions() {
     parts.forEach(p => checklist += addCheckbox(p));
   }
   if (mepilexMsg) checklist += addCheckbox(mepilexMsg);
+if (magneticStrap === "yes") {
+  extraChecklist.push("⚠️ Magnetic strap used. Confirm that patient does not have metal implant.");
+}
   extraChecklist.forEach(item => checklist += addCheckbox(item));
 
   checklist += "</ul></form></div>";
